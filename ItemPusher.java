@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemPusher extends Item
 {
-    private boolean isSticky;
+	private final boolean isSticky;
 
     public ItemPusher(int i, boolean sticky)
     {
@@ -39,7 +39,7 @@ public class ItemPusher extends Item
             return !(Block.blocksList[i] instanceof BlockContainer);
         }
     }
-@Override
+    @Override
     public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int i, int j, int k, int l, float par8, float par9, float par10)
     {
         int i1 = world.getBlockId(i, j, k);
@@ -47,9 +47,7 @@ public class ItemPusher extends Item
         int k1 = j;
         int l1 = k;
         int i2 = i;
-        int dir=1;
-    	if(isSticky)
-    		dir=-1;
+        int dir = isSticky ? -1:1;
         if (i1 != Block.vine.blockID)
         {
             if (l == 0)
@@ -80,8 +78,11 @@ public class ItemPusher extends Item
         int j2 = world.getBlockId(i2, k1, l1);
         if (canPushBlock(world, i1, i, k, l) && (j2 == 0 || j2 == 8 || j2 == 9 || j2 == 10 || j2 == 11 || j2 == 51))
         {
-            EntityMovingPushBlock entitymovingpushblock = new EntityMovingPushBlock(world, (float)i + 0.5F, (float)j + 0.5F, (float)k + 0.5F, i1, l, j1, 0.10000000000000001D*dir);
-            world.spawnEntityInWorld(entitymovingpushblock);
+        	if(!world.isRemote)
+        	{
+        		EntityMovingPushBlock entitymovingpushblock = new EntityMovingPushBlock(world, (float)i + 0.5F, (float)j + 0.5F, (float)k + 0.5F, i1, l, j1, 0.10000000000000001D*dir);         
+            	world.spawnEntityInWorld(entitymovingpushblock);
+        	}
             world.setBlockToAir(i, j, k);
             itemstack.damageItem(1, entityplayer);
         }

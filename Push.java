@@ -17,6 +17,7 @@ import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -76,6 +77,7 @@ public class Push implements ITickHandler
                     " ! ", "@#@", " @ ", '!', Item.diamond, '@', Item.ingotIron, '#', Item.redstone
                 });
         TickRegistry.registerTickHandler(this, Side.SERVER);
+        EntityRegistry.registerModEntity(EntityMovingPushBlock.class, "moving block", 1, this, 10, 1, false);
         proxy.register();
     }
 

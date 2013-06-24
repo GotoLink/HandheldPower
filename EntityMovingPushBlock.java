@@ -1,5 +1,7 @@
 package mods.handheldpiston;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
@@ -40,21 +42,21 @@ public class EntityMovingPushBlock extends Entity
         metadata = k;
         pushpull = d3;
     }
-@Override
+    @Override
     protected boolean canTriggerWalking()
     {
         return true;
     }
-@Override
+	@Override
     protected void entityInit()
     {
     }
-@Override
+	@Override
     public boolean canBeCollidedWith()
     {
         return true;
     }
-@Override
+	@Override
     public void onUpdate()
     {
         if (blockID == 0)
@@ -116,19 +118,26 @@ public class EntityMovingPushBlock extends Entity
             worldObj.setBlock(i, j, k, blockID, metadata, 3);
         }
     }
-@Override
+	@Override
     protected void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
-        nbttagcompound.setByte("Tile", (byte)blockID);
+        nbttagcompound.setByte("Tile", (byte)this.blockID);
+        nbttagcompound.setByte("Data", (byte)this.metadata);     
     }
-@Override
+	@Override
     protected void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
-        blockID = nbttagcompound.getByte("Tile") & 0xff;
+        this.blockID = nbttagcompound.getByte("Tile") & 0xff;
+        this.metadata = nbttagcompound.getByte("Data") & 255;    
     }
-@Override
+	@SideOnly(Side.CLIENT)
     public float getShadowSize()
     {
         return 0.0F;
     }
+	@SideOnly(Side.CLIENT)
+	public World getWorld()
+	{
+	    return this.worldObj;
+	}
 }
