@@ -1,4 +1,4 @@
-package mods.handheldpiston;
+package assets.handheldpiston;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;

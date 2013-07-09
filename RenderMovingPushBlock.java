@@ -1,9 +1,11 @@
-package mods.handheldpiston;
+package assets.handheldpiston;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -29,7 +31,8 @@ public class RenderMovingPushBlock extends Render
         World world = entitymovingpushblock.getWorld();
         GL11.glPushMatrix();
         GL11.glTranslatef((float)d, (float)d1, (float)d2);
-        loadTexture("/terrain.png");
+        this.func_110775_a(entitymovingpushblock);
+        //loadTexture("/terrain.png");
         GL11.glDisable(GL11.GL_LIGHTING);
         this.renderBlock.blockAccess = world;
         if (block instanceof BlockStairs)
@@ -93,4 +96,9 @@ public class RenderMovingPushBlock extends Render
         block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
         return flag;
     }
+
+	@Override
+	protected ResourceLocation func_110775_a(Entity entity) {
+		return TextureMap.field_110575_b;
+	}
 }

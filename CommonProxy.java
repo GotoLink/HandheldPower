@@ -1,4 +1,4 @@
-package mods.handheldpiston;
+package assets.handheldpiston;
 
 public class CommonProxy {
 

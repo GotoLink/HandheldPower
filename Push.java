@@ -1,4 +1,4 @@
-package mods.handheldpiston;
+package assets.handheldpiston;
 
 import java.util.EnumSet;
 
@@ -10,8 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
-import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -26,7 +25,7 @@ import cpw.mods.fml.relauncher.Side;
 @NetworkMod(clientSideRequired=true, serverSideRequired=false)
 public class Push implements ITickHandler
 {
-	@SidedProxy(clientSide="mods.handheldpiston.ClientProxy",serverSide="mods.handheldpiston.CommonProxy")
+	@SidedProxy(clientSide="assets.handheldpiston.ClientProxy",serverSide="assets.handheldpiston.CommonProxy")
 	public static CommonProxy proxy;
 	
     public static int handHeldPistonID = 2030,stickyHandHeldPistonID = 2031,redstoneRemoteID = 2032;
@@ -40,7 +39,7 @@ public class Push implements ITickHandler
     public static int i1,j1,k1;
     public static boolean flag = false;
     public static int powerTime = 0;
-    @PreInit
+    @EventHandler
     public void configLoad(FMLPreInitializationEvent event)
     {
     	Configuration config = new Configuration(event.getSuggestedConfigurationFile());
@@ -54,7 +53,7 @@ public class Push implements ITickHandler
     		config.save();
     }
     
-    @Init
+    @EventHandler
     public void load(FMLInitializationEvent e)
     {
         pusher = new ItemPusher(handHeldPistonID,false).setUnlocalizedName("Pusher");

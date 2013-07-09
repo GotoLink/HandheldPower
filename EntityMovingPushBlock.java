@@ -1,4 +1,4 @@
-package mods.handheldpiston;
+package assets.handheldpiston;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

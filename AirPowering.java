@@ -1,4 +1,4 @@
-package mods.handheldpiston;
+package assets.handheldpiston;
 
 import net.minecraft.world.World;
 @Deprecated

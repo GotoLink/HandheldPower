@@ -1,4 +1,4 @@
-package mods.handheldpiston;
+package assets.handheldpiston;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
