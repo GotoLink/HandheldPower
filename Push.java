@@ -44,9 +44,9 @@ public class Push implements ITickHandler
     {
     	Configuration config = new Configuration(event.getSuggestedConfigurationFile());
     	config.load();
-    	handHeldPistonID = config.get("item", "HandheldPistonID", handHeldPistonID).getInt();
-    	stickyHandHeldPistonID = config.get("item", "StickyHandheldPistonID", stickyHandHeldPistonID).getInt();
-    	redstoneRemoteID = config.get("redstone remote", "RedstoneRemoteID", redstoneRemoteID).getInt();
+    	handHeldPistonID = config.getItem("HandheldPistonID", handHeldPistonID).getInt();
+    	stickyHandHeldPistonID = config.getItem("StickyHandheldPistonID", stickyHandHeldPistonID).getInt();
+    	redstoneRemoteID = config.getItem("RedstoneRemoteID", redstoneRemoteID).getInt();
     	range = config.get("redstone remote", "Power", range, "The power the remote brings to the block.").getInt();
     	maxPowerTime = config.get("redstone remote", "MaxPoweringDelay", maxPowerTime, "The maximum amount of time the block is powered.").getInt();
     	if(config.hasChanged())
@@ -76,7 +76,7 @@ public class Push implements ITickHandler
                     " ! ", "@#@", " @ ", '!', Item.diamond, '@', Item.ingotIron, '#', Item.redstone
                 });
         TickRegistry.registerTickHandler(this, Side.SERVER);
-        EntityRegistry.registerModEntity(EntityMovingPushBlock.class, "moving block", 1, this, 10, 1, false);
+        EntityRegistry.registerModEntity(EntityMovingPushBlock.class, "moving block", 1, this, 20, 1, true);
         proxy.register();
     }
 
