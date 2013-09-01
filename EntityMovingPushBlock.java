@@ -59,6 +59,7 @@ public class EntityMovingPushBlock extends Entity
 	@Override
     public void onUpdate()
     {
+		super.onUpdate();
         if (blockID == 0)
         {
             setDead();
@@ -68,39 +69,21 @@ public class EntityMovingPushBlock extends Entity
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
-        if (direction == 0)
+        if (direction == 0 || direction == 1)
         {
-            motionY = pushpull;
+            motionY = pushpull*(1-2*direction);
             motionZ = 0.0D;
             motionX = 0.0D;
         }
-        else if (direction == 1)
+        else if (direction == 2 || direction == 3)
         {
-            motionY = -pushpull;
-            motionZ = 0.0D;
-            motionX = 0.0D;
-        }
-        else if (direction == 2)
-        {
-            motionZ = pushpull;
+            motionZ = pushpull*(5-2*direction);
             motionY = 0.0D;
             motionX = 0.0D;
         }
-        else if (direction == 3)
+        else if (direction == 4 || direction == 5)
         {
-            motionZ = -pushpull;
-            motionY = 0.0D;
-            motionX = 0.0D;
-        }
-        else if (direction == 4)
-        {
-            motionX = pushpull;
-            motionY = 0.0D;
-            motionZ = 0.0D;
-        }
-        else if (direction == 5)
-        {
-            motionX = -pushpull;
+            motionX = pushpull*(9-2*direction);
             motionY = 0.0D;
             motionZ = 0.0D;
         }
@@ -108,7 +91,7 @@ public class EntityMovingPushBlock extends Entity
         int i = MathHelper.floor_double(posX);
         int j = MathHelper.floor_double(posY);
         int k = MathHelper.floor_double(posZ);
-        if (moveTime == 0)
+        if (moveTime == 1)
         {
             worldObj.playSoundAtEntity(this, "tile.piston.out", 0.5F, 1.2F);
         }
