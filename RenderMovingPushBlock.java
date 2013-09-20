@@ -96,7 +96,7 @@ public class RenderMovingPushBlock extends Render
     }
 
 	@Override
-	protected ResourceLocation func_110775_a(Entity entity) {
-		return TextureMap.field_110575_b;
+	protected ResourceLocation getEntityTexture(Entity entity) {
+		return TextureMap.locationBlocksTexture;
 	}
 }
