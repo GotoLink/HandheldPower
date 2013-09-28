@@ -8,10 +8,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -21,13 +21,11 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
+
 @Mod(modid = "handheldpiston", name="Handheld Piston Mod", version="0.1")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false)
 public class Push implements ITickHandler
 {
-	@SidedProxy(clientSide="assets.handheldpiston.ClientProxy",serverSide="assets.handheldpiston.CommonProxy")
-	public static CommonProxy proxy;
-	
     public static int handHeldPistonID = 2030,stickyHandHeldPistonID = 2031,redstoneRemoteID = 2032;
 	public static int range = 2;
 	public static int maxPowerTime = 40;
@@ -60,6 +58,9 @@ public class Push implements ITickHandler
         stickyPusher = new ItemPusher(stickyHandHeldPistonID,true).setUnlocalizedName("StickyPusher");
         powerer = new ItemPowerer(redstoneRemoteID).setUnlocalizedName("Powerer").setCreativeTab(CreativeTabs.tabRedstone);
         airPower = new BlockAirPower(redstoneRemoteBlockID,range).setUnlocalizedName("AirPower").setHardness(-1F);
+        GameRegistry.registerItem(pusher, "Handheld Piston");
+        GameRegistry.registerItem(stickyPusher, "Sticky Handheld Piston");
+        GameRegistry.registerItem(powerer, "Redstone Remote");
         LanguageRegistry.instance().addName(pusher, "Handheld Piston");
         LanguageRegistry.instance().addName(stickyPusher, "Sticky Handheld Piston");
         LanguageRegistry.instance().addName(powerer, "Redstone Remote");
@@ -77,7 +78,8 @@ public class Push implements ITickHandler
                 });
         TickRegistry.registerTickHandler(this, Side.SERVER);
         EntityRegistry.registerModEntity(EntityMovingPushBlock.class, "moving block", 1, this, 20, 1, true);
-        proxy.register();
+        if(e.getSide().isClient())
+        	RenderingRegistry.registerEntityRenderingHandler(EntityMovingPushBlock.class, new RenderMovingPushBlock());
     }
 
     public static void newAirPower(World world1, int i, int j, int k)
