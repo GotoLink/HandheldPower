@@ -88,7 +88,8 @@ public class ItemPusher extends Item
         }
         return true;
     }
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister par1IconRegister)
     {
         this.itemIcon = par1IconRegister.registerIcon("handheldpiston:"+(isSticky?"stickyP":"p")+"istonItem");

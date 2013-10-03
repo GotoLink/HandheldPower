@@ -16,7 +16,7 @@ public class ItemPowerer extends Item
         maxStackSize = 1;
         setMaxDamage(1000);
     }
-@Override
+    @Override
     public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int i, int j, int k, int l, float par8, float par9, float par10)
     {
         if (l == 0)
@@ -50,7 +50,8 @@ public class ItemPowerer extends Item
         itemstack.damageItem(1, entityplayer);
         return true;
     }
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister par1IconRegister)
     {
         this.itemIcon = par1IconRegister.registerIcon("handheldpiston:RedstoneRemote");

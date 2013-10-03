@@ -1,5 +1,7 @@
 package assets.handheldpiston;
 
+import static cpw.mods.fml.relauncher.Side.CLIENT;
+
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
@@ -9,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -21,12 +24,13 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Mod(modid = "handheldpiston", name="Handheld Piston Mod", version="0.1")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false)
 public class Push implements ITickHandler
 {
-    public static int handHeldPistonID = 2030,stickyHandHeldPistonID = 2031,redstoneRemoteID = 2032;
+	public static int handHeldPistonID = 4030,stickyHandHeldPistonID = 4031,redstoneRemoteID = 4032;
 	public static int range = 2;
 	public static int maxPowerTime = 40;
 	
@@ -58,30 +62,43 @@ public class Push implements ITickHandler
         stickyPusher = new ItemPusher(stickyHandHeldPistonID,true).setUnlocalizedName("StickyPusher");
         powerer = new ItemPowerer(redstoneRemoteID).setUnlocalizedName("Powerer").setCreativeTab(CreativeTabs.tabRedstone);
         airPower = new BlockAirPower(redstoneRemoteBlockID,range).setUnlocalizedName("AirPower").setHardness(-1F);
+       
         GameRegistry.registerItem(pusher, "Handheld Piston");
         GameRegistry.registerItem(stickyPusher, "Sticky Handheld Piston");
         GameRegistry.registerItem(powerer, "Redstone Remote");
+        GameRegistry.addRecipe(new ItemStack(pusher, 1, 0), new Object[]
+            {
+                " ! ", " @ ", " # ", '!', Block.planks, '@', Item.ingotIron, '#', Block.cobblestone
+            });
+        GameRegistry.addRecipe(new ItemStack(stickyPusher, 1, 0), new Object[]
+            {
+                "!", "@", Character.valueOf('!'), Item.slimeBall, '@', Push.pusher
+            });
+        GameRegistry.addRecipe(new ItemStack(powerer, 1, 0), new Object[]
+            {
+                " ! ", "@#@", " @ ", '!', Item.diamond, '@', Item.ingotIron, '#', Item.redstone
+            });
+        
+        if(FMLCommonHandler.instance().getSide().isClient())
+		{
+			addRenderers();
+			addLocalizations();
+		}
+        TickRegistry.registerTickHandler(this, Side.SERVER);
+        EntityRegistry.registerModEntity(EntityMovingPushBlock.class, "moving block", 1, this, 20, 1, true);
+    }
+    @SideOnly(CLIENT)
+	private static void addRenderers()
+	{
+		RenderingRegistry.registerEntityRenderingHandler(EntityMovingPushBlock.class, new RenderMovingPushBlock());
+	}
+	@SideOnly(CLIENT)
+	private static void addLocalizations() 
+	{
         LanguageRegistry.instance().addName(pusher, "Handheld Piston");
         LanguageRegistry.instance().addName(stickyPusher, "Sticky Handheld Piston");
         LanguageRegistry.instance().addName(powerer, "Redstone Remote");
-        GameRegistry.addRecipe(new ItemStack(pusher, 1, 0), new Object[]
-                {
-                    " ! ", " @ ", " # ", '!', Block.planks, '@', Item.ingotIron, '#', Block.cobblestone
-                });
-        GameRegistry.addRecipe(new ItemStack(stickyPusher, 1, 0), new Object[]
-                {
-                    "!", "@", Character.valueOf('!'), Item.slimeBall, '@', pusher
-                });
-        GameRegistry.addRecipe(new ItemStack(powerer, 1, 0), new Object[]
-                {
-                    " ! ", "@#@", " @ ", '!', Item.diamond, '@', Item.ingotIron, '#', Item.redstone
-                });
-        TickRegistry.registerTickHandler(this, Side.SERVER);
-        EntityRegistry.registerModEntity(EntityMovingPushBlock.class, "moving block", 1, this, 20, 1, true);
-        if(e.getSide().isClient())
-        	RenderingRegistry.registerEntityRenderingHandler(EntityMovingPushBlock.class, new RenderMovingPushBlock());
-    }
-
+	}
     public static void newAirPower(World world1, int i, int j, int k)
     {
         if (flag)

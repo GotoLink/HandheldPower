@@ -78,6 +78,7 @@ public class BlockAirPower extends Block
     {
         return true;
     }*/
+@Override
 @SideOnly(Side.CLIENT)
 public void registerIcons(IconRegister par1IconRegister) {}
 

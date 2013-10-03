@@ -113,6 +113,7 @@ public class EntityMovingPushBlock extends Entity
         this.blockID = nbttagcompound.getByte("Tile") & 0xff;
         this.metadata = nbttagcompound.getByte("Data") & 255;    
     }
+	@Override
 	@SideOnly(Side.CLIENT)
     public float getShadowSize()
     {
