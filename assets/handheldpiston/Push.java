@@ -21,7 +21,6 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -29,10 +28,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 @Mod(modid = "handheldpiston", name = "Handheld Piston Mod", version = "0.1")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class Push implements ITickHandler {
-	public static int handHeldPistonID = 4030, stickyHandHeldPistonID = 4031, redstoneRemoteID = 4032;
+	private static int handHeldPistonID = 4030, stickyHandHeldPistonID = 4031, redstoneRemoteID = 4032;
 	public static int range = 2;
 	public static int maxPowerTime = 40;
-	public static int redstoneRemoteBlockID = 175;
+	private static int redstoneRemoteBlockID = 175;
 	public static Item pusher, stickyPusher, powerer;
 	public static Block airPower;
 	//public AirPowering power;
@@ -53,6 +52,11 @@ public class Push implements ITickHandler {
 			config.save();
 	}
 
+	@Override
+	public String getLabel() {
+		return null;
+	}
+
 	@EventHandler
 	public void load(FMLInitializationEvent e) {
 		pusher = new ItemPusher(handHeldPistonID, false).setUnlocalizedName("Pusher");
@@ -67,34 +71,18 @@ public class Push implements ITickHandler {
 		GameRegistry.addRecipe(new ItemStack(powerer, 1, 0), new Object[] { " ! ", "@#@", " @ ", '!', Item.diamond, '@', Item.ingotIron, '#', Item.redstone });
 		if (FMLCommonHandler.instance().getSide().isClient()) {
 			addRenderers();
-			addLocalizations();
 		}
 		TickRegistry.registerTickHandler(this, Side.SERVER);
 		EntityRegistry.registerModEntity(EntityMovingPushBlock.class, "moving block", 1, this, 20, 1, true);
 	}
 
-	@SideOnly(CLIENT)
-	private static void addRenderers() {
-		RenderingRegistry.registerEntityRenderingHandler(EntityMovingPushBlock.class, new RenderMovingPushBlock());
+	@Override
+	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
 	}
 
-	@SideOnly(CLIENT)
-	private static void addLocalizations() {
-		LanguageRegistry.instance().addName(pusher, "Handheld Piston");
-		LanguageRegistry.instance().addName(stickyPusher, "Sticky Handheld Piston");
-		LanguageRegistry.instance().addName(powerer, "Redstone Remote");
-	}
-
-	public static void newAirPower(World world1, int i, int j, int k) {
-		if (flag) {
-			world1.setBlockToAir(i1, j1, k1);
-			flag = false;
-		}
-		i1 = i;
-		j1 = j;
-		k1 = k;
-		flag = true;
-		powerTime = 0;
+	@Override
+	public EnumSet<TickType> ticks() {
+		return EnumSet.of(TickType.WORLD);
 	}
 
 	@Override
@@ -111,17 +99,20 @@ public class Push implements ITickHandler {
 		}
 	}
 
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
+	public static void newAirPower(World world1, int i, int j, int k) {
+		if (flag) {
+			world1.setBlockToAir(i1, j1, k1);
+			flag = false;
+		}
+		i1 = i;
+		j1 = j;
+		k1 = k;
+		flag = true;
+		powerTime = 0;
 	}
 
-	@Override
-	public EnumSet<TickType> ticks() {
-		return EnumSet.of(TickType.WORLD);
-	}
-
-	@Override
-	public String getLabel() {
-		return null;
+	@SideOnly(CLIENT)
+	private static void addRenderers() {
+		RenderingRegistry.registerEntityRenderingHandler(EntityMovingPushBlock.class, new RenderMovingPushBlock());
 	}
 }
