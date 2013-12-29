@@ -1,0 +1,17 @@
+[
+{
+  "modid": "handheldpiston",
+  "name": "Handheld Piston Mod",
+  "description": "Move or power blocks from afar",
+  "version": "0.1",
+  "credits": "",
+  "logoFile": "",
+  "mcversion": "",
+  "url": "http://www.minecraftforum.net/topic/843540-",
+  "updateUrl": "",
+  "authors": ["Stewiecraft","GotoLink"],
+  "parent":"",
+  "screenshots": [],
+  "dependencies": []
+}
+]
