@@ -2,39 +2,32 @@ package assets.handheldpiston;
 
 import static cpw.mods.fml.relauncher.Side.CLIENT;
 
-import java.util.EnumSet;
-
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Mod(modid = "handheldpiston", name = "Handheld Piston Mod", version = "0.1")
-@NetworkMod(clientSideRequired = true, serverSideRequired = false)
-public class Push implements ITickHandler {
-	private static int handHeldPistonID = 4030, stickyHandHeldPistonID = 4031, redstoneRemoteID = 4032;
+@Mod(modid = "handheldpiston", name = "Handheld Piston Mod", version = "0.2")
+public class Push {
 	public static int range = 2;
 	public static int maxPowerTime = 40;
-	private static int redstoneRemoteBlockID = 175;
 	public static Item pusher, stickyPusher, powerer;
 	public static Block airPower;
-	//public AirPowering power;
 	public static int i1, j1, k1;
 	public static boolean flag = false;
 	public static int powerTime = 0;
@@ -42,55 +35,38 @@ public class Push implements ITickHandler {
 	@EventHandler
 	public void configLoad(FMLPreInitializationEvent event) {
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-		config.load();
-		handHeldPistonID = config.getItem("HandheldPistonID", handHeldPistonID).getInt();
-		stickyHandHeldPistonID = config.getItem("StickyHandheldPistonID", stickyHandHeldPistonID).getInt();
-		redstoneRemoteID = config.getItem("RedstoneRemoteID", redstoneRemoteID).getInt();
 		range = config.get("redstone remote", "Power", range, "The power the remote brings to the block.").getInt();
 		maxPowerTime = config.get("redstone remote", "MaxPoweringDelay", maxPowerTime, "The maximum amount of time the block is powered.").getInt();
 		if (config.hasChanged())
 			config.save();
-	}
-
-	@Override
-	public String getLabel() {
-		return null;
+        pusher = new ItemPusher(false).setUnlocalizedName("Pusher");
+        stickyPusher = new ItemPusher(true).setUnlocalizedName("StickyPusher");
+        powerer = new ItemPowerer().setUnlocalizedName("Powerer").setCreativeTab(CreativeTabs.tabRedstone);
+        airPower = new BlockAirPower(range).func_149663_c("AirPower").func_149711_c(-1F);
+        GameRegistry.registerBlock(airPower, "Powered Block");
+        GameRegistry.registerItem(pusher, "Handheld Piston");
+        GameRegistry.registerItem(stickyPusher, "Sticky Handheld Piston");
+        GameRegistry.registerItem(powerer, "Redstone Remote");
 	}
 
 	@EventHandler
 	public void load(FMLInitializationEvent e) {
-		pusher = new ItemPusher(handHeldPistonID, false).setUnlocalizedName("Pusher");
-		stickyPusher = new ItemPusher(stickyHandHeldPistonID, true).setUnlocalizedName("StickyPusher");
-		powerer = new ItemPowerer(redstoneRemoteID).setUnlocalizedName("Powerer").setCreativeTab(CreativeTabs.tabRedstone);
-		airPower = new BlockAirPower(redstoneRemoteBlockID, range).setUnlocalizedName("AirPower").setHardness(-1F);
-		GameRegistry.registerItem(pusher, "Handheld Piston");
-		GameRegistry.registerItem(stickyPusher, "Sticky Handheld Piston");
-		GameRegistry.registerItem(powerer, "Redstone Remote");
-		GameRegistry.addRecipe(new ItemStack(pusher, 1, 0), new Object[] { " ! ", " @ ", " # ", '!', Block.planks, '@', Item.ingotIron, '#', Block.cobblestone });
-		GameRegistry.addRecipe(new ItemStack(stickyPusher, 1, 0), new Object[] { "!", "@", Character.valueOf('!'), Item.slimeBall, '@', Push.pusher });
-		GameRegistry.addRecipe(new ItemStack(powerer, 1, 0), new Object[] { " ! ", "@#@", " @ ", '!', Item.diamond, '@', Item.ingotIron, '#', Item.redstone });
-		if (FMLCommonHandler.instance().getSide().isClient()) {
+		GameRegistry.addRecipe(new ItemStack(pusher, 1, 0), " ! ", " @ ", " # ", '!', Blocks.planks, '@', Items.iron_ingot, '#', Blocks.cobblestone);
+		GameRegistry.addRecipe(new ItemStack(stickyPusher, 1, 0), "!", "@", '!', Items.slime_ball, '@', Push.pusher);
+		GameRegistry.addRecipe(new ItemStack(powerer, 1, 0), " ! ", "@#@", " @ ", '!', Items.diamond, '@', Items.iron_ingot, '#', Items.redstone);
+		if (e.getSide().isClient()) {
 			addRenderers();
 		}
-		TickRegistry.registerTickHandler(this, Side.SERVER);
+		FMLCommonHandler.instance().bus().register(this);
 		EntityRegistry.registerModEntity(EntityMovingPushBlock.class, "moving block", 1, this, 20, 1, true);
 	}
 
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-	}
-
-	@Override
-	public EnumSet<TickType> ticks() {
-		return EnumSet.of(TickType.WORLD);
-	}
-
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) {
-		if (tickData[0] instanceof World && flag) {
+	@SubscribeEvent
+	public void tickStart(TickEvent.WorldTickEvent event) {
+		if (event.phase== TickEvent.Phase.START && event.side.isServer() && flag) {
 			if (powerTime >= maxPowerTime) {
-				((World) tickData[0]).setBlockToAir(i1, j1, k1);
-				((World) tickData[0]).notifyBlocksOfNeighborChange(i1, j1, k1, 0);
+				event.world.func_147468_f(i1, j1, k1);
+				event.world.func_147459_d(i1, j1, k1, Blocks.air);
 				powerTime = 0;
 				flag = false;
 			} else {
@@ -101,7 +77,7 @@ public class Push implements ITickHandler {
 
 	public static void newAirPower(World world1, int i, int j, int k) {
 		if (flag) {
-			world1.setBlockToAir(i1, j1, k1);
+			world1.func_147468_f(i1, j1, k1);
 			flag = false;
 		}
 		i1 = i;

@@ -1,15 +1,19 @@
 package assets.handheldpiston;
 
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class EntityMovingPushBlock extends Entity {
-	public int blockID;
-	public int direction;
+public class EntityMovingPushBlock extends Entity implements IEntityAdditionalSpawnData{
+	public Block blockID;
+	public short direction;
 	public int metadata;
 	public int moveTime;
 	public double pushpull;
@@ -22,7 +26,7 @@ public class EntityMovingPushBlock extends Entity {
 		moveTime = 0;
 	}
 
-	public EntityMovingPushBlock(World world, double d, double d1, double d2, int i, int j, int k, double d3) {
+	public EntityMovingPushBlock(World world, double d, double d1, double d2, Block i, short j, int k, double d3) {
 		this(world);
 		blockID = i;
 		preventEntitySpawning = true;
@@ -51,15 +55,10 @@ public class EntityMovingPushBlock extends Entity {
 		return 0.0F;
 	}
 
-	@SideOnly(Side.CLIENT)
-	public World getWorld() {
-		return this.worldObj;
-	}
-
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		if (blockID == 0) {
+		if (blockID == Blocks.air) {
 			setDead();
 			return;
 		}
@@ -81,14 +80,16 @@ public class EntityMovingPushBlock extends Entity {
 			motionZ = 0.0D;
 		}
 		moveEntity(motionX, motionY, motionZ);
-		int i = MathHelper.floor_double(posX);
-		int j = MathHelper.floor_double(posY);
-		int k = MathHelper.floor_double(posZ);
 		if (moveTime == 1) {
 			worldObj.playSoundAtEntity(this, "tile.piston.out", 0.5F, 1.2F);
 		} else if (moveTime == 10) {
-			setDead();
-			worldObj.setBlock(i, j, k, blockID, metadata, 3);
+            int i = MathHelper.floor_double(posX);
+            int j = MathHelper.floor_double(posY);
+            int k = MathHelper.floor_double(posZ);
+            if(!worldObj.isRemote){
+                worldObj.func_147465_d(i, j, k, blockID, metadata, 3);
+                setDead();
+            }
 		}
 	}
 
@@ -99,17 +100,33 @@ public class EntityMovingPushBlock extends Entity {
 
 	@Override
 	protected void entityInit() {
-	}
+    }
 
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound nbttagcompound) {
-		this.blockID = nbttagcompound.getByte("Tile") & 0xff;
+		this.blockID = Block.func_149729_e(nbttagcompound.getInteger("Tile"));
 		this.metadata = nbttagcompound.getByte("Data") & 255;
 	}
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound nbttagcompound) {
-		nbttagcompound.setByte("Tile", (byte) this.blockID);
+		nbttagcompound.setInteger("Tile", Block.func_149682_b(this.blockID));
 		nbttagcompound.setByte("Data", (byte) this.metadata);
 	}
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer) {
+        buffer.writeInt(Block.func_149682_b(this.blockID));
+        buffer.writeByte(this.metadata);
+        buffer.writeDouble(this.pushpull);
+        buffer.writeShort(this.direction);
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf data) {
+        this.blockID = Block.func_149729_e(data.readInt());
+        this.metadata = data.readByte();
+        this.pushpull = data.readDouble();
+        this.direction = data.readShort();
+    }
 }
