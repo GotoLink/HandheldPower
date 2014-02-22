@@ -16,9 +16,8 @@ public class BlockAirPower extends Block {
 	private int powerRange;
 
 	public BlockAirPower(int power) {
-		super(Material.field_151581_o);
-        func_149672_a(field_149769_e);
-        func_149675_a(true);
+		super(Material.circuits);
+        setTickRandomly(true);
 		if (power >= 0 && power <= 15) {
 			this.powerRange = power;
 		}
@@ -30,70 +29,70 @@ public class BlockAirPower extends Block {
     }
 
 	@Override
-	public void func_149749_a(World world, int i, int j, int k, Block par5, int par6) {
-		world.func_147459_d(i, j, k, Push.airPower);
+	public void breakBlock(World world, int i, int j, int k, Block par5, int par6) {
+		world.notifyBlocksOfNeighborChange(i, j, k, Push.airPower);
 	}
 
 	@Override
-	public boolean func_149744_f() {
+	public boolean canProvidePower() {
 		return true;
 	}
 
 	@Override
-	public int func_149748_c(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
+	public int isProvidingStrongPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
 		return this.powerRange;
 	}
 
 	@Override
-	public int func_149709_b(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
+	public int isProvidingWeakPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
 		return this.powerRange;
 	}
 
 	@Override
-	public void func_149726_b(World world, int i, int j, int k) {
+	public void onBlockAdded(World world, int i, int j, int k) {
 		Push.newAirPower(world, i, j, k);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void func_149651_a(IIconRegister par1IconRegister) {
+	public void registerBlockIcons(IIconRegister par1IconRegister) {
 	}
 
 	@Override
-	public int func_149738_a(World world) {
+	public int tickRate(World world) {
 		return 1;
 	}
 
     //Delete the block after some time
 	@Override
-	public void func_149674_a(World world, int i, int j, int k, Random random) {
-		world.func_147468_f(i, j, k);
+	public void updateTick(World world, int i, int j, int k, Random random) {
+		world.setBlockToAir(i, j, k);
 	}
 
     //Make sure thing is invisible
 
     @Override
-    public AxisAlignedBB func_149668_a(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_){
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_){
         return null;
     }
 
     @Override
-    public boolean func_149686_d(){
+    public boolean renderAsNormalBlock(){
         return false;
     }
 
     @Override
-    public boolean func_149662_c(){
+    public boolean isOpaqueCube(){
         return false;
     }
 
     @Override
-    public boolean func_149678_a(int p_149678_1_, boolean p_149678_2_){
+    public boolean canCollideCheck(int p_149678_1_, boolean p_149678_2_){
         return false;
     }
 
     @Override
-    public int func_149645_b(){
+    public int getRenderType(){
         return -1;
     }
 }

@@ -2,7 +2,6 @@ package assets.handheldpiston;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -36,8 +35,8 @@ public class ItemPowerer extends Item {
 		if (l == 5) {
 			i++;
 		}
-		if (world.func_147439_a(i, j, k) == Blocks.air) {
-			world.func_147449_b(i, j, k, Push.airPower);
+		if (world.isAirBlock(i, j, k)) {
+			world.setBlock(i, j, k, Push.airPower);
 		}
 		itemstack.damageItem(1, entityplayer);
 		return true;

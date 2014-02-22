@@ -87,7 +87,7 @@ public class EntityMovingPushBlock extends Entity implements IEntityAdditionalSp
             int j = MathHelper.floor_double(posY);
             int k = MathHelper.floor_double(posZ);
             if(!worldObj.isRemote){
-                worldObj.func_147465_d(i, j, k, blockID, metadata, 3);
+                worldObj.setBlock(i, j, k, blockID, metadata, 3);
                 setDead();
             }
 		}
@@ -104,19 +104,19 @@ public class EntityMovingPushBlock extends Entity implements IEntityAdditionalSp
 
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound nbttagcompound) {
-		this.blockID = Block.func_149729_e(nbttagcompound.getInteger("Tile"));
+		this.blockID = Block.getBlockById(nbttagcompound.getInteger("Tile"));
 		this.metadata = nbttagcompound.getByte("Data") & 255;
 	}
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound nbttagcompound) {
-		nbttagcompound.setInteger("Tile", Block.func_149682_b(this.blockID));
+		nbttagcompound.setInteger("Tile", Block.getIdFromBlock(this.blockID));
 		nbttagcompound.setByte("Data", (byte) this.metadata);
 	}
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
-        buffer.writeInt(Block.func_149682_b(this.blockID));
+        buffer.writeInt(Block.getIdFromBlock(this.blockID));
         buffer.writeByte(this.metadata);
         buffer.writeDouble(this.pushpull);
         buffer.writeShort(this.direction);
@@ -124,7 +124,7 @@ public class EntityMovingPushBlock extends Entity implements IEntityAdditionalSp
 
     @Override
     public void readSpawnData(ByteBuf data) {
-        this.blockID = Block.func_149729_e(data.readInt());
+        this.blockID = Block.getBlockById(data.readInt());
         this.metadata = data.readByte();
         this.pushpull = data.readDouble();
         this.direction = data.readShort();

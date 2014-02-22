@@ -24,9 +24,9 @@ public class ItemPusher extends Item {
 	}
 
 	public boolean canPushBlock(World world, Block i, int j, int k, int l) {
-		if (i == Blocks.obsidian || i.func_149712_f(world, j, k, l) == -1F) {
+		if (i == Blocks.obsidian || i.getBlockHardness(world, j, k, l) == -1F) {
 			return false;
-		}else if (i.func_149688_o().getMaterialMobility() > 0) {
+		}else if (i.getMaterial().getMaterialMobility() > 0) {
 			return false;
 		} else {
 			return !(i.hasTileEntity(world.getBlockMetadata(j,k,l)));
@@ -35,7 +35,7 @@ public class ItemPusher extends Item {
 
 	@Override
 	public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int i, int j, int k, int l, float par8, float par9, float par10) {
-		Block i1 = world.func_147439_a(i, j, k);
+		Block i1 = world.getBlock(i, j, k);
 		int j1 = world.getBlockMetadata(i, j, k);
 		int k1 = j;
 		int l1 = k;
@@ -61,13 +61,13 @@ public class ItemPusher extends Item {
 				i2 -= dir;
 			}
 		}
-		Block j2 = world.func_147439_a(i2, k1, l1);
-		if (canPushBlock(world, i1, i, k, l) && (j2 == Blocks.air || j2.func_149688_o() == Material.field_151586_h || j2.func_149688_o() == Material.field_151587_i || j2 == Blocks.fire)) {
+		Block j2 = world.getBlock(i2, k1, l1);
+		if (canPushBlock(world, i1, i, k, l) && (j2 == Blocks.air || j2.getMaterial() == Material.water || j2.getMaterial() == Material.lava || j2 == Blocks.fire)) {
 			if (!world.isRemote) {
 				EntityMovingPushBlock entitymovingpushblock = new EntityMovingPushBlock(world, (float) i + 0.5F, (float) j + 0.5F, (float) k + 0.5F, i1,(short) l, j1, 0.1D * dir);
 				world.spawnEntityInWorld(entitymovingpushblock);
 			}
-			world.func_147468_f(i, j, k);
+			world.setBlockToAir(i, j, k);
 			itemstack.damageItem(1, entityplayer);
 		}
 		return true;

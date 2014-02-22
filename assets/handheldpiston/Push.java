@@ -42,7 +42,7 @@ public class Push {
         pusher = new ItemPusher(false).setUnlocalizedName("Pusher");
         stickyPusher = new ItemPusher(true).setUnlocalizedName("StickyPusher");
         powerer = new ItemPowerer().setUnlocalizedName("Powerer").setCreativeTab(CreativeTabs.tabRedstone);
-        airPower = new BlockAirPower(range).func_149663_c("AirPower").func_149711_c(-1F);
+        airPower = new BlockAirPower(range).setBlockName("AirPower").setHardness(-1F);
         GameRegistry.registerBlock(airPower, "Powered Block");
         GameRegistry.registerItem(pusher, "Handheld Piston");
         GameRegistry.registerItem(stickyPusher, "Sticky Handheld Piston");
@@ -65,8 +65,8 @@ public class Push {
 	public void tickStart(TickEvent.WorldTickEvent event) {
 		if (event.phase== TickEvent.Phase.START && event.side.isServer() && flag) {
 			if (powerTime >= maxPowerTime) {
-				event.world.func_147468_f(i1, j1, k1);
-				event.world.func_147459_d(i1, j1, k1, Blocks.air);
+				event.world.setBlockToAir(i1, j1, k1);
+				event.world.notifyBlockChange(i1, j1, k1, Blocks.air);
 				powerTime = 0;
 				flag = false;
 			} else {
@@ -77,7 +77,7 @@ public class Push {
 
 	public static void newAirPower(World world1, int i, int j, int k) {
 		if (flag) {
-			world1.func_147468_f(i1, j1, k1);
+			world1.setBlockToAir(i1, j1, k1);
 			flag = false;
 		}
 		i1 = i;
