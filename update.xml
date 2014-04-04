@@ -1,0 +1,23 @@
+<mod modid="handheldpiston">
+    <mcVersion version="1.7.2">
+        <release type="release" version="0.2"
+                 url="http://www.minecraftforum.net/topic/1651891-"
+                 download="http://www.mediafire.com/download/3kah4jesacm1h23/HandheldPower-0.2(1.7.2).jar"
+                 md5="D2851A259F3BE99FA3CF03B069968B09"
+                />
+    </mcVersion>
+	<mcVersion version="1.6.4">
+        <release type="release" version="0.1"
+                 url="http://www.minecraftforum.net/topic/1651891-"
+                 download="http://www.mediafire.com/download/lb0b20gnw8beon5/HandheldPower_0.1(1.6.X).zip"
+                 md5="33020F5751EAF0FF436CBA339AE24C15"
+                />
+    </mcVersion>
+	<mcVersion version="1.5.2">
+        <release type="release" version="0.1"
+                 url="http://www.minecraftforum.net/topic/1651891-"
+                 download="http://www.mediafire.com/download/93oqge3ery4lelg/HandheldPower_0.1(1.5.X).zip"
+                 md5="FF8E43847325145D04C5F021663D5E22"
+                />
+    </mcVersion>
+</mod>
