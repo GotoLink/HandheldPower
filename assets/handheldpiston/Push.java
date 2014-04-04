@@ -2,6 +2,7 @@ package assets.handheldpiston;
 
 import static cpw.mods.fml.relauncher.Side.CLIENT;
 
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.block.Block;
@@ -22,7 +23,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Mod(modid = "handheldpiston", name = "Handheld Piston Mod", version = "0.2")
+@Mod(modid = "handheldpiston", name = "Handheld Piston Mod", useMetadata = true)
 public class Push {
 	public static int range = 2;
 	public static int maxPowerTime = 40;
@@ -47,6 +48,16 @@ public class Push {
         GameRegistry.registerItem(pusher, "Handheld Piston");
         GameRegistry.registerItem(stickyPusher, "Sticky Handheld Piston");
         GameRegistry.registerItem(powerer, "Redstone Remote");
+        if(event.getSourceFile().getName().endsWith(".jar") && event.getSide().isClient()){
+            try {
+                Class.forName("mods.mud.ModUpdateDetector").getDeclaredMethod("registerMod", ModContainer.class, String.class, String.class).invoke(null,
+                        FMLCommonHandler.instance().findContainerFor(this),
+                        "https://raw.github.com/GotoLink/HandheldPower/master/update.xml",
+                        "https://raw.github.com/GotoLink/HandheldPower/master/changelog.md"
+                );
+            } catch (Throwable e) {
+            }
+        }
 	}
 
 	@EventHandler
