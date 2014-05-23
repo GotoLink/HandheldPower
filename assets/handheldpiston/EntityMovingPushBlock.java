@@ -17,9 +17,6 @@ public class EntityMovingPushBlock extends Entity implements IEntityAdditionalSp
 	public int metadata;
 	public int moveTime;
 	public double pushpull;
-	public double startPosX;
-	public double startPosY;
-	public double startPosZ;
 
 	public EntityMovingPushBlock(World world) {
 		super(world);
