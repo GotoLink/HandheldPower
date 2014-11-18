@@ -3,8 +3,10 @@ package assets.handheldpiston;
 import static cpw.mods.fml.relauncher.Side.CLIENT;
 
 import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -44,10 +46,10 @@ public class Push {
         stickyPusher = new ItemPusher(true).setUnlocalizedName("StickyPusher");
         powerer = new ItemPowerer().setUnlocalizedName("Powerer").setCreativeTab(CreativeTabs.tabRedstone);
         airPower = new BlockAirPower(range).setBlockName("AirPower").setHardness(-1F);
-        GameRegistry.registerBlock(airPower, "Powered Block");
-        GameRegistry.registerItem(pusher, "Handheld Piston");
-        GameRegistry.registerItem(stickyPusher, "Sticky Handheld Piston");
-        GameRegistry.registerItem(powerer, "Redstone Remote");
+        GameRegistry.registerBlock(airPower, "PoweredBlock");
+        GameRegistry.registerItem(pusher, "HandheldPiston");
+        GameRegistry.registerItem(stickyPusher, "StickyHandheldPiston");
+        GameRegistry.registerItem(powerer, "RedstoneRemote");
         if(event.getSourceFile().getName().endsWith(".jar") && event.getSide().isClient()){
             try {
                 Class.forName("mods.mud.ModUpdateDetector").getDeclaredMethod("registerMod", ModContainer.class, String.class, String.class).invoke(null,
@@ -102,4 +104,18 @@ public class Push {
 	private static void addRenderers() {
 		RenderingRegistry.registerEntityRenderingHandler(EntityMovingPushBlock.class, new RenderMovingPushBlock());
 	}
+
+    @EventHandler
+    public void remap(FMLMissingMappingsEvent event){
+        for(FMLMissingMappingsEvent.MissingMapping missingMapping:event.get()){
+            switch(missingMapping.type){
+                case ITEM:
+                    missingMapping.remap(GameData.getItemRegistry().getObject(missingMapping.name.replace(" ", "")));
+                    break;
+                case BLOCK:
+                    missingMapping.remap(GameData.getBlockRegistry().getObject(missingMapping.name.replace(" ", "")));
+                    break;
+            }
+        }
+    }
 }
