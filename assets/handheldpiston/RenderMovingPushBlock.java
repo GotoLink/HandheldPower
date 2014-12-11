@@ -1,5 +1,7 @@
 package assets.handheldpiston;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.client.renderer.entity.Render;
@@ -8,14 +10,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 @SideOnly(Side.CLIENT)
-public class RenderMovingPushBlock extends Render {
+public final class RenderMovingPushBlock extends Render {
 	public RenderMovingPushBlock() {
 		shadowSize = 0.5F;
 	}
