@@ -1,4 +1,11 @@
 <mod modid="handheldpiston">
+    <mcVersion version="1.7.10">
+        <release type="release" version="0.3"
+                 url="http://www.minecraftforum.net/topic/1651891-/#HandheldPiston"
+                 download="http://www.mediafire.com/download/bq5w23xwp9dxm95/HandheldPower-0.3(1.7.10).jar"
+                 md5="E01C284E4119E5147FA8A0E9ED993862"
+                />
+    </mcVersion>
     <mcVersion version="1.7.2">
         <release type="release" version="0.2"
                  url="http://www.minecraftforum.net/topic/1651891-/#HandheldPiston"

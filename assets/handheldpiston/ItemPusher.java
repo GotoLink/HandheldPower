@@ -17,20 +17,14 @@ public class ItemPusher extends Item {
 
 	public ItemPusher(boolean sticky) {
 		super();
-		maxStackSize = 1;
+		setMaxStackSize(1);
 		setMaxDamage(100);
 		isSticky = sticky;
 		setCreativeTab(CreativeTabs.tabRedstone);
 	}
 
 	public boolean canPushBlock(World world, Block i, int j, int k, int l) {
-		if (i == Blocks.obsidian || i.getBlockHardness(world, j, k, l) == -1F) {
-			return false;
-		}else if (i.getMaterial().getMaterialMobility() > 0) {
-			return false;
-		} else {
-			return !(i.hasTileEntity(world.getBlockMetadata(j,k,l)));
-		}
+		return !(i == Blocks.obsidian || i.getBlockHardness(world, j, k, l) == -1F) && i.getMaterial().getMaterialMobility() == 0 && !(i.hasTileEntity(world.getBlockMetadata(j, k, l)));
 	}
 
 	@Override
@@ -62,9 +56,9 @@ public class ItemPusher extends Item {
 			}
 		}
 		Block j2 = world.getBlock(i2, k1, l1);
-		if (canPushBlock(world, i1, i, k, l) && (j2 == Blocks.air || j2.getMaterial() == Material.water || j2.getMaterial() == Material.lava || j2 == Blocks.fire)) {
+		if (canPushBlock(world, i1, i, k, l) && j2.isReplaceable(world, i2, k1, l1)) {
 			if (!world.isRemote) {
-				EntityMovingPushBlock entitymovingpushblock = new EntityMovingPushBlock(world, (float) i + 0.5F, (float) j + 0.5F, (float) k + 0.5F, i1,(short) l, j1, 0.1D * dir);
+				EntityMovingPushBlock entitymovingpushblock = new EntityMovingPushBlock(world, i, j, k, i1,(short) l, j1, 0.1F * dir);
 				world.spawnEntityInWorld(entitymovingpushblock);
 			}
 			world.setBlockToAir(i, j, k);
