@@ -25,27 +25,23 @@ import net.minecraftforge.common.config.Configuration;
 
 import static cpw.mods.fml.relauncher.Side.CLIENT;
 
-@Mod(modid = "handheldpiston", name = "Handheld Piston Mod", useMetadata = true)
+@Mod(modid = "handheldpiston", name = "Handheld Piston Mod", version="$version")
 public final class Push {
-	public static int range = 2;
-	public static int maxPowerTime = 40;
+	public static int range = 2, maxPowerTime = 40;
 	public static Item pusher, stickyPusher, powerer;
 	public static Block airPower;
-	public static int i1, j1, k1;
-	public static boolean flag = false;
-	public static int powerTime = 0;
 
 	@EventHandler
 	public void configLoad(FMLPreInitializationEvent event) {
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-		range = config.get("redstone remote", "Power", range, "The power the remote brings to the block.").getInt();
-		maxPowerTime = config.get("redstone remote", "MaxPoweringDelay", maxPowerTime, "The maximum amount of time the block is powered.").getInt();
+		range = config.getInt("Power", "redstone remote", range, 1, 15, "The power the remote brings to the block.");
+		maxPowerTime = config.get("redstone remote", "MaxPoweringDelay", maxPowerTime, "The maximum amount of time the block is powered.").setMinValue(1).getInt();
 		if (config.hasChanged())
 			config.save();
         pusher = new ItemPusher(false).setUnlocalizedName("Pusher");
         stickyPusher = new ItemPusher(true).setUnlocalizedName("StickyPusher");
-        powerer = new ItemPowerer().setUnlocalizedName("Powerer").setCreativeTab(CreativeTabs.tabRedstone);
-        airPower = new BlockAirPower(range).setBlockName("AirPower").setHardness(-1F);
+        powerer = new ItemPowerer().setMaxStackSize(1).setMaxDamage(1000).setUnlocalizedName("Powerer").setTextureName("handheldpiston:RedstoneRemote").setCreativeTab(CreativeTabs.tabRedstone);
+        airPower = new BlockAirPower().setBlockName("AirPower").setHardness(-1F);
         GameRegistry.registerBlock(airPower, "PoweredBlock");
         GameRegistry.registerItem(pusher, "HandheldPiston");
         GameRegistry.registerItem(stickyPusher, "StickyHandheldPiston");
@@ -70,38 +66,11 @@ public final class Push {
 		if (e.getSide().isClient()) {
 			addRenderers();
 		}
-		FMLCommonHandler.instance().bus().register(this);
-		EntityRegistry.registerModEntity(EntityMovingPushBlock.class, "moving block", 1, this, 20, 1, true);
-	}
-
-	@SubscribeEvent
-	public void tickStart(TickEvent.WorldTickEvent event) {
-		if (event.phase== TickEvent.Phase.START && event.side.isServer() && flag) {
-			if (powerTime >= maxPowerTime) {
-				event.world.setBlockToAir(i1, j1, k1);
-				event.world.notifyBlockChange(i1, j1, k1, Blocks.air);
-				powerTime = 0;
-				flag = false;
-			} else {
-				powerTime++;
-			}
-		}
-	}
-
-	public static void newAirPower(World world1, int i, int j, int k) {
-		if (flag) {
-			world1.setBlockToAir(i1, j1, k1);
-			flag = false;
-		}
-		i1 = i;
-		j1 = j;
-		k1 = k;
-		flag = true;
-		powerTime = 0;
+		EntityRegistry.registerModEntity(EntityMovingPushBlock.class, "moving block", 1, this, 80, 3, false);
 	}
 
 	@SideOnly(CLIENT)
-	private static void addRenderers() {
+	private void addRenderers() {
 		RenderingRegistry.registerEntityRenderingHandler(EntityMovingPushBlock.class, new RenderMovingPushBlock());
 	}
 

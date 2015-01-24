@@ -9,11 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class ItemPowerer extends Item {
-	public ItemPowerer() {
-		super();
-		maxStackSize = 1;
-		setMaxDamage(1000);
-	}
 
 	@Override
 	public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int i, int j, int k, int l, float par8, float par9, float par10) {
@@ -40,11 +35,5 @@ public class ItemPowerer extends Item {
 		}
 		itemstack.damageItem(1, entityplayer);
 		return true;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister par1IconRegister) {
-		this.itemIcon = par1IconRegister.registerIcon("handheldpiston:RedstoneRemote");
 	}
 }

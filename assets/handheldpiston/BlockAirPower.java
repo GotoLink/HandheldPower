@@ -13,14 +13,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.Random;
 
 public class BlockAirPower extends Block {
-	private int powerRange;
 
-	public BlockAirPower(int power) {
+	public BlockAirPower() {
 		super(Material.circuits);
-        setTickRandomly(true);
-		if (power >= 0 && power <= 15) {
-			this.powerRange = power;
-		}
 	}
 
     @Override
@@ -40,17 +35,17 @@ public class BlockAirPower extends Block {
 
 	@Override
 	public int isProvidingStrongPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
-		return this.powerRange;
+		return Push.range;
 	}
 
 	@Override
 	public int isProvidingWeakPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
-		return this.powerRange;
+		return Push.range;
 	}
 
 	@Override
 	public void onBlockAdded(World world, int i, int j, int k) {
-		Push.newAirPower(world, i, j, k);
+		world.scheduleBlockUpdate(i, j, k, this, tickRate(world));
 	}
 
 	@Override
@@ -60,7 +55,7 @@ public class BlockAirPower extends Block {
 
 	@Override
 	public int tickRate(World world) {
-		return 1;
+		return Push.maxPowerTime;
 	}
 
     //Delete the block after some time
@@ -70,7 +65,6 @@ public class BlockAirPower extends Block {
 	}
 
     //Make sure thing is invisible
-
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_){
         return null;
